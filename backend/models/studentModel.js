@@ -1,27 +1,10 @@
 const pool = require('../config/database');
 
-/**
- * Student Model - Database operations for students
- */
 const studentModel = {
-  /**
-   * Create a new student
-   * @param {Object} studentData - Student information
-   * @returns {Promise<Object>} Created student record
-   */
   async createStudent(studentData) {
     const {
-      first_name,
-      last_name,
-      email,
-      phone,
-      date_of_birth,
-      address,
-      city,
-      state,
-      postal_code,
-      country,
-      status
+      first_name, last_name, email, phone, date_of_birth,
+      address, city, state, postal_code, country, status
     } = studentData;
 
     const query = `
@@ -34,47 +17,21 @@ const studentModel = {
     `;
 
     const values = [
-      first_name,
-      last_name,
-      email,
-      phone || null,
-      date_of_birth,
-      address || null,
-      city || null,
-      state || null,
-      postal_code || null,
-      country || 'India',
-      status || 'active'
+      first_name, last_name, email, phone || null, date_of_birth,
+      address || null, city || null, state || null,
+      postal_code || null, country || 'India', status || 'active'
     ];
 
     const result = await pool.query(query, values);
     return result.rows[0];
   },
 
-  /**
-   * Get all students with pagination
-   * @param {number} limit - Number of records per page
-   * @param {number} offset - Starting position
-   * @returns {Promise<Array>} Array of student records
-   */
   async getAllStudents(limit, offset) {
     const query = `
       SELECT 
-        student_id,
-        first_name,
-        last_name,
-        email,
-        phone,
-        date_of_birth,
-        enrollment_date,
-        address,
-        city,
-        state,
-        postal_code,
-        country,
-        status,
-        created_at,
-        updated_at
+        student_id, first_name, last_name, email, phone,
+        date_of_birth, enrollment_date, address, city, state,
+        postal_code, country, status, created_at, updated_at
       FROM students
       ORDER BY student_id DESC
       LIMIT $1 OFFSET $2
@@ -84,16 +41,8 @@ const studentModel = {
     return result.rows;
   },
 
-  /**
-   * Get single student by ID with all marks
-   * @param {number} id - Student ID
-   * @returns {Promise<Object>} Student with marks
-   */
   async getStudentById(id) {
-    // Get student basic info
-    const studentQuery = `
-      SELECT * FROM students WHERE student_id = $1
-    `;
+    const studentQuery = 'SELECT * FROM students WHERE student_id = $1';
     const studentResult = await pool.query(studentQuery, [id]);
 
     if (studentResult.rows.length === 0) {
@@ -102,20 +51,11 @@ const studentModel = {
 
     const student = studentResult.rows[0];
 
-    // Get student marks with subject details
     const marksQuery = `
       SELECT 
-        m.mark_id,
-        m.marks_obtained,
-        m.exam_date,
-        m.exam_type,
-        m.grade,
-        m.remarks,
-        s.subject_id,
-        s.subject_code,
-        s.subject_name,
-        s.max_marks,
-        s.passing_marks,
+        m.mark_id, m.marks_obtained, m.exam_date, m.exam_type,
+        m.grade, m.remarks, s.subject_id, s.subject_code,
+        s.subject_name, s.max_marks, s.passing_marks,
         ROUND((m.marks_obtained / s.max_marks) * 100, 2) as percentage,
         CASE 
           WHEN m.marks_obtained >= s.passing_marks THEN 'Pass'
@@ -126,34 +66,19 @@ const studentModel = {
       WHERE m.student_id = $1
       ORDER BY m.exam_date DESC
     `;
+    
     const marksResult = await pool.query(marksQuery, [id]);
 
-    // Combine student data with marks
     return {
       ...student,
       marks: marksResult.rows
     };
   },
 
-  /**
-   * Update student information
-   * @param {number} id - Student ID
-   * @param {Object} studentData - Updated student information
-   * @returns {Promise<Object>} Updated student record
-   */
   async updateStudent(id, studentData) {
     const {
-      first_name,
-      last_name,
-      email,
-      phone,
-      date_of_birth,
-      address,
-      city,
-      state,
-      postal_code,
-      country,
-      status
+      first_name, last_name, email, phone, date_of_birth,
+      address, city, state, postal_code, country, status
     } = studentData;
 
     const query = `
@@ -176,44 +101,20 @@ const studentModel = {
     `;
 
     const values = [
-      first_name,
-      last_name,
-      email,
-      phone,
-      date_of_birth,
-      address,
-      city,
-      state,
-      postal_code,
-      country,
-      status,
-      id
+      first_name, last_name, email, phone, date_of_birth,
+      address, city, state, postal_code, country, status, id
     ];
 
     const result = await pool.query(query, values);
     return result.rows[0];
   },
 
-  /**
-   * Delete student by ID
-   * @param {number} id - Student ID
-   * @returns {Promise<Object>} Deleted student record
-   */
   async deleteStudent(id) {
-    const query = `
-      DELETE FROM students
-      WHERE student_id = $1
-      RETURNING *
-    `;
-
+    const query = 'DELETE FROM students WHERE student_id = $1 RETURNING *';
     const result = await pool.query(query, [id]);
     return result.rows[0];
   },
 
-  /**
-   * Get total count of students
-   * @returns {Promise<number>} Total number of students
-   */
   async getStudentCount() {
     const query = 'SELECT COUNT(*) as count FROM students';
     const result = await pool.query(query);

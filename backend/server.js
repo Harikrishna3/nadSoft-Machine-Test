@@ -6,23 +6,19 @@ const studentRoutes = require('./routes/studentRoutes');
 const errorHandler = require('./middleware/errorHandler');
 const pool = require('./config/database');
 
-// Initialize Express app
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
-app.use(cors()); // Enable CORS for all routes
-app.use(bodyParser.json()); // Parse JSON request bodies
-app.use(bodyParser.urlencoded({ extended: true })); // Parse URL-encoded bodies
-app.use(express.json()); // Built-in JSON parser
+app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
 
-// Request logging middleware
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
   next();
 });
 
-// Health check endpoint
 app.get('/', (req, res) => {
   res.json({
     success: true,
@@ -35,7 +31,6 @@ app.get('/', (req, res) => {
   });
 });
 
-// Database health check
 app.get('/health', async (req, res) => {
   try {
     await pool.query('SELECT 1');
@@ -54,10 +49,8 @@ app.get('/health', async (req, res) => {
   }
 });
 
-// API Routes
 app.use('/api', studentRoutes);
 
-// 404 handler for undefined routes
 app.use((req, res) => {
   res.status(404).json({
     success: false,
@@ -66,10 +59,8 @@ app.use((req, res) => {
   });
 });
 
-// Global error handler (must be last)
 app.use(errorHandler);
 
-// Start server
 app.listen(PORT, async () => {
   console.log('='.repeat(50));
   console.log(`🚀 Server is running on port ${PORT}`);
@@ -77,7 +68,6 @@ app.listen(PORT, async () => {
   console.log(`🏥 Health Check: http://localhost:${PORT}/health`);
   console.log('='.repeat(50));
   
-  // Test database connection
   try {
     await pool.query('SELECT NOW()');
     console.log('✅ Database connected successfully');
@@ -86,7 +76,6 @@ app.listen(PORT, async () => {
   }
 });
 
-// Graceful shutdown
 process.on('SIGTERM', () => {
   console.log('SIGTERM signal received: closing HTTP server');
   pool.end(() => {

@@ -1,12 +1,6 @@
 const { body, param, validationResult } = require('express-validator');
 
-/**
- * Validation middleware for student operations
- */
 const studentValidator = {
-  /**
-   * Validation rules for creating a student
-   */
   createStudent: [
     body('first_name')
       .trim()
@@ -42,9 +36,7 @@ const studentValidator = {
       .isDate()
       .withMessage('Must be a valid date (YYYY-MM-DD)'),
     
-    body('address')
-      .optional()
-      .trim(),
+    body('address').optional().trim(),
     
     body('city')
       .optional()
@@ -76,9 +68,6 @@ const studentValidator = {
       .withMessage('Status must be one of: active, inactive, graduated, suspended')
   ],
 
-  /**
-   * Validation rules for updating a student
-   */
   updateStudent: [
     param('id')
       .isInt({ min: 1 })
@@ -120,18 +109,12 @@ const studentValidator = {
       .withMessage('Status must be one of: active, inactive, graduated, suspended')
   ],
 
-  /**
-   * Validation rules for student ID parameter
-   */
   studentId: [
     param('id')
       .isInt({ min: 1 })
       .withMessage('Student ID must be a positive integer')
   ],
 
-  /**
-   * Middleware to handle validation errors
-   */
   handleValidationErrors: (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
