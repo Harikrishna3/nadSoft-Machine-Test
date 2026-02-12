@@ -1,0 +1,183 @@
+{
+  "info": {
+    "name": "Student Management API",
+    "description": "Complete API collection for Student Management System with CRUD operations and pagination",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "student-api"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/health",
+          "host": ["{{base_url}}"],
+          "path": ["health"]
+        },
+        "description": "Check if the API and database are running properly"
+      }
+    },
+    {
+      "name": "Create Student",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"first_name\": \"John\",\n  \"last_name\": \"Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"phone\": \"9876543210\",\n  \"date_of_birth\": \"2000-05-15\",\n  \"address\": \"123 Main Street\",\n  \"city\": \"Mumbai\",\n  \"state\": \"Maharashtra\",\n  \"postal_code\": \"400001\",\n  \"country\": \"India\",\n  \"status\": \"active\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/students",
+          "host": ["{{base_url}}"],
+          "path": ["api", "students"]
+        },
+        "description": "Create a new student record with all required information"
+      }
+    },
+    {
+      "name": "Get All Students (Paginated)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/students?page=1&limit=10",
+          "host": ["{{base_url}}"],
+          "path": ["api", "students"],
+          "query": [
+            {
+              "key": "page",
+              "value": "1",
+              "description": "Page number (default: 1)"
+            },
+            {
+              "key": "limit",
+              "value": "10",
+              "description": "Records per page (default: 10, max: 100)"
+            }
+          ]
+        },
+        "description": "Retrieve a paginated list of all students with metadata"
+      }
+    },
+    {
+      "name": "Get All Students - Page 2",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/students?page=2&limit=5",
+          "host": ["{{base_url}}"],
+          "path": ["api", "students"],
+          "query": [
+            {
+              "key": "page",
+              "value": "2"
+            },
+            {
+              "key": "limit",
+              "value": "5"
+            }
+          ]
+        },
+        "description": "Example of pagination - Get second page with 5 records"
+      }
+    },
+    {
+      "name": "Get Student by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/students/1",
+          "host": ["{{base_url}}"],
+          "path": ["api", "students", "1"]
+        },
+        "description": "Get a single student by ID with all marks and subject details"
+      }
+    },
+    {
+      "name": "Update Student",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"first_name\": \"Updated John\",\n  \"email\": \"john.updated@example.com\",\n  \"status\": \"active\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/students/1",
+          "host": ["{{base_url}}"],
+          "path": ["api", "students", "1"]
+        },
+        "description": "Update student information (all fields are optional)"
+      }
+    },
+    {
+      "name": "Delete Student",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/students/6",
+          "host": ["{{base_url}}"],
+          "path": ["api", "students", "6"]
+        },
+        "description": "Delete a student by ID (cascades to marks)"
+      }
+    },
+    {
+      "name": "Create Student - Validation Error",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"first_name\": \"J\",\n  \"last_name\": \"Doe\",\n  \"email\": \"invalid-email\",\n  \"date_of_birth\": \"2000-05-15\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/students",
+          "host": ["{{base_url}}"],
+          "path": ["api", "students"]
+        },
+        "description": "Example of validation errors - invalid email and short first name"
+      }
+    },
+    {
+      "name": "Get Non-Existent Student",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/students/9999",
+          "host": ["{{base_url}}"],
+          "path": ["api", "students", "9999"]
+        },
+        "description": "Example of 404 error - student not found"
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    }
+  ]
+}
